@@ -1,0 +1,18 @@
+#Tests whether the lambda production for factList and ruleList are successfully incorporated in the program
+#The output should be a success
+
+Schemes:
+  snap(S,N,A,P)
+
+#comment
+
+  HasSameAddress(X,Y)
+
+Facts:
+
+Rules:
+
+#comment
+
+Queries:
+  HasSameAddress('Snoopy',Who)?

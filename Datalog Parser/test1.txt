@@ -1,0 +1,15 @@
+#Tests whether the parser recognizes a skip in SCHEMES and COLON
+#The output should be a failure message followed by and ID token with the value of "HasSameAddress(X,Y)"
+  HasSameAddress(X,Y)
+
+Facts: #comment
+  snap('12345','C. Brown','12 Apple','555-1234').
+  snap('33333','Snoopy','12 Apple','555-1234').
+
+Rules:
+  HasSameAddress(X,Y) :- snap(A,X,B,C),snap(D,Y,B,(Em,jk+C)).
+
+#comment
+
+Queries:
+  HasSameAddress('Snoopy',Who)?
