@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <list>
 #include "LexicalAnalyzer.h"
 #include "Parser.h"
 #ifdef _MSC_VER
@@ -27,6 +26,17 @@ int main(int argc, char* argv[])
 		LexicalAnalyzer lex(con);
 		lex.generateList();
 		Parser parser(lex.getList());
+		parser.parse();
+		cout << endl;
+
+		cout << parser.getVec().size() << endl << parser.getVec().at(0).size() << endl << parser.getVec().at(1).size() << endl;
+		for (int i = 0; i < parser.getVec().size(); i++)
+		{
+			for (int t = 0; t < parser.getVec().at(i).size(); t++)
+			{
+				cout << parser.getVec()[i][t];
+			}
+		}
 
 		system("pause");
 	return 0;

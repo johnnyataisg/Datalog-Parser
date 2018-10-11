@@ -31,6 +31,7 @@ void Parser::match(TokenType tt)
 {
 	if (tokenList.at(index).getType() == tt)
 	{
+		temp = tokenList.at(index).getValue();
 		ss.pop();
 		index++;
 	}
@@ -75,6 +76,8 @@ void Parser::parseDatalog()
 	match(SCH);
 	match(COL);
 	parseScheme();
+	vec.push_back(vec2);
+	vec2.clear();
 	parseSchemeList();
 	match(FAC);
 	match(COL);
@@ -102,6 +105,8 @@ void Parser::parseScheme()
 		match(ID);
 		match(LPAR);
 		match(ID);
+		vec2.push_back(temp);
+		temp = "";
 		parseIdList();
 		match(RPAR);
 	}
@@ -119,6 +124,8 @@ void Parser::parseSchemeList()
 		ss.push(schemeList);
 		ss.push(scheme);
 		parseScheme();
+		vec.push_back(vec2);
+		vec2.clear();
 		parseSchemeList();
 	}
 	else if (tokenList.at(index).getType() == FAC)
@@ -134,6 +141,7 @@ void Parser::parseSchemeList()
 
 void Parser::parseIdList()
 {
+	temp = "";
 	if (tokenList.at(index).getType() == COM)
 	{
 		ss.pop();
@@ -142,6 +150,8 @@ void Parser::parseIdList()
 		ss.push(comma);
 		match(COM);
 		match(ID);
+		vec2.push_back(temp);
+		temp = "";
 		parseIdList();
 	}
 	else if (tokenList.at(index).getType() == RPAR)
