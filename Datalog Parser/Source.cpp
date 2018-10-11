@@ -3,7 +3,6 @@
 #include <list>
 #include "LexicalAnalyzer.h"
 #include "Parser.h"
-#include "Id.h"
 #ifdef _MSC_VER
 #define _CRTDBG_MAP_ALLOC  
 #include <crtdbg.h>
@@ -28,10 +27,6 @@ int main(int argc, char* argv[])
 		LexicalAnalyzer lex(con);
 		lex.generateList();
 		Parser parser(lex.getList());
-		parser.parse();
-
-		Id id(lex);
-		cout << id.print();
 
 		system("pause");
 	return 0;

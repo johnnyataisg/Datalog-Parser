@@ -129,6 +129,7 @@
     <ClInclude Include="Expression.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Rule.h" />
+    <ClInclude Include="Schemes.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="Token.h" />
   </ItemGroup>

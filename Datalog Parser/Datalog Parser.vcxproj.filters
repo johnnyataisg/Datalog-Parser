@@ -59,5 +59,8 @@
     <ClInclude Include="Id.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Schemes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

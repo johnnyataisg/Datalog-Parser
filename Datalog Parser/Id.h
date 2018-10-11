@@ -10,11 +10,11 @@ using namespace std;
 class Id : Parameter
 {
 private:
-	vector<Token> vec;
+	Token id;
 public:
 	Id(LexicalAnalyzer& lex) 
 	{
-		 lex.getNextToken(SCH);
+		 lex.getNextToken(ID);
 	}
 	string print()
 	{
