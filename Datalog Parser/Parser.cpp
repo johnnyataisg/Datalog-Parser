@@ -12,7 +12,13 @@ Parser::Parser(list<Token> list)
 	ss.push(Start);
 }
 
-Parser::~Parser() {}
+Parser::~Parser()
+{
+	allSchemes.clear();
+	allFacts.clear();
+	allRules.clear();
+	allQueries.clear();
+}
 
 string Parser::print()
 {
@@ -49,9 +55,14 @@ void Parser::parse()
 	{
 		parseDatalog();
 		cout << "Success!" << endl;
+		cout << datalog.toString();
 	}
 	catch (Token token)
 	{
+		for (size_t i = 0; i < pred.size(); i++)
+		{
+			delete pred.at(i);
+		}
 		cout << "Failure!" << endl << "  {" << myList[token.getType()] << "," << token.getValue() << "," << token.getLineNum() << ")" << endl;
 	}
 }
@@ -76,20 +87,23 @@ void Parser::parseDatalog()
 	match(SCH);
 	match(COL);
 	parseScheme();
-	vec.push_back(vec2);
-	vec2.clear();
 	parseSchemeList();
+	datalog.setScheme(allSchemes);
 	match(FAC);
 	match(COL);
 	parseFactList();
+	datalog.setFact(allFacts);
 	match(RUL);
 	match(COL);
 	parseRuleList();
+	datalog.setRule(allRules);
 	match(QUE);
 	match(COL);
 	parseQuery();
 	parseQueryList();
 	match(EF);
+	datalog.setQuery(allQueries);
+	datalog.sortFacts();
 }
 
 void Parser::parseScheme()
@@ -103,11 +117,16 @@ void Parser::parseScheme()
 		ss.push(lpar);
 		ss.push(id);
 		match(ID);
+		Id idTemp(temp);
+		pred.setID(idTemp);
+		temp = "";
 		match(LPAR);
 		match(ID);
-		vec2.push_back(temp);
+		pred.push(new Id(temp));
 		temp = "";
 		parseIdList();
+		allSchemes.push(pred);
+		pred.clear();
 		match(RPAR);
 	}
 	else
@@ -124,8 +143,6 @@ void Parser::parseSchemeList()
 		ss.push(schemeList);
 		ss.push(scheme);
 		parseScheme();
-		vec.push_back(vec2);
-		vec2.clear();
 		parseSchemeList();
 	}
 	else if (tokenList.at(index).getType() == FAC)
@@ -141,7 +158,6 @@ void Parser::parseSchemeList()
 
 void Parser::parseIdList()
 {
-	temp = "";
 	if (tokenList.at(index).getType() == COM)
 	{
 		ss.pop();
@@ -150,7 +166,7 @@ void Parser::parseIdList()
 		ss.push(comma);
 		match(COM);
 		match(ID);
-		vec2.push_back(temp);
+		pred.push(new Id(temp));
 		temp = "";
 		parseIdList();
 	}
@@ -177,9 +193,16 @@ void Parser::parseFact()
 		ss.push(lpar);
 		ss.push(id);
 		match(ID);
+		Id idTemp(temp);
+		pred.setID(idTemp);
+		temp = "";
 		match(LPAR);
 		match(STR);
+		pred.push(new String(temp));
+		temp = "";
 		parseStringList();
+		allFacts.push(pred);
+		pred.clear();
 		match(RPAR);
 		match(PER);
 	}
@@ -223,6 +246,8 @@ void Parser::parseRule()
 		parseHeadPredicate();
 		match(COLD);
 		parsePredicate();
+		allRules.pushPred(pred);
+		pred.clear();
 		parsePredicateList();
 		match(PER);
 	}
@@ -264,9 +289,17 @@ void Parser::parseHeadPredicate()
 		ss.push(lpar);
 		ss.push(id);
 		match(ID);
+		Id idTemp(temp);
+		pred.setID(idTemp);
+		temp = "";
 		match(LPAR);
 		match(ID);
+		pred.push(new Id(temp));
+		temp = "";
 		parseIdList();
+		Rules ruleTemp(pred);
+		allRules.push(ruleTemp);
+		pred.clear();
 		match(RPAR);
 	}
 	else
@@ -286,6 +319,9 @@ void Parser::parsePredicate()
 		ss.push(lpar);
 		ss.push(id);
 		match(ID);
+		Id idTemp(temp);
+		pred.setID(idTemp);
+		temp = "";
 		match(LPAR);
 		parseParameter();
 		parseParameterList();
@@ -307,6 +343,8 @@ void Parser::parsePredicateList()
 		ss.push(comma);
 		match(COM);
 		parsePredicate();
+		allRules.pushPred(pred);
+		pred.clear();
 		parsePredicateList();
 	}
 	else if (tokenList.at(index).getType() == PER)
@@ -327,12 +365,16 @@ void Parser::parseParameter()
 		ss.pop();
 		ss.push(str);
 		match(STR);
+		pred.push(new String(temp));
+		temp = "";
 	}
 	else if (tokenList.at(index).getType() == ID)
 	{
 		ss.pop();
 		ss.push(id);
 		match(ID);
+		pred.push(new Id(temp));
+		temp = "";
 	}
 	else if (tokenList.at(index).getType() == LPAR)
 	{
@@ -419,6 +461,8 @@ void Parser::parseQuery()
 		ss.push(qmark);
 		ss.push(predicate);
 		parsePredicate();
+		allQueries.push(pred);
+		pred.clear();
 		match(QM);
 	}
 	else
@@ -458,6 +502,8 @@ void Parser::parseStringList()
 		ss.push(comma);
 		match(COM);
 		match(STR);
+		pred.push(new String(temp));
+		temp = "";
 		parseStringList();
 	}
 	else if (tokenList.at(index).getType() == RPAR)

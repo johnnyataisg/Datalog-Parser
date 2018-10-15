@@ -38,5 +38,38 @@
     <ClInclude Include="Parser.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Predicate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheme.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DatalogProgram.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Parameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Id.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fact.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rule.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rules.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Expression.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Query.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,8 +5,8 @@
 #include <stack>
 #include <sstream>
 #include <iostream>
+#include "DatalogProgram.h"
 #include "Token.h"
-#include "vector"
 
 using namespace std;
 
@@ -23,8 +23,12 @@ private:
 	string myList[18] = { "COMMA", "PERIOD", "Q_MARK", "LEFT_PAREN", "RIGHT_PAREN", "COLON", "COLON_DASH"
 						, "MULTIPLY", "ADD", "SCHEMES", "FACTS", "RULES", "QUERIES", "ID", "STRING", "COMMENT", "UNDEFINED", "EOF" };
 	string temp;
-	vector<vector<string>> vec;
-	vector<string> vec2;
+	DatalogProgram datalog;
+	Scheme allSchemes;
+	Fact allFacts;
+	Rule allRules;
+	Query allQueries;
+	Predicate pred;
 public:
 	Parser(list<Token> list);
 	~Parser();
@@ -49,9 +53,9 @@ public:
 	void parseQuery();
 	void parseQueryList();
 	void parseStringList();
-	vector<vector<string>> getVec()
+	DatalogProgram getProgram()
 	{
-		return vec;
+		return datalog;
 	}
 };
 
