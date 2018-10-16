@@ -48,7 +48,7 @@ public:
 	Token getNextToken(TokenType tt)
 	{
 		Token result = tokenList.front();
-		if (result.getType() == MYEOF || result.getType() != tt) 
+		if (result.getType() == EF || result.getType() != tt) 
 		{
 			throw result;
 		}

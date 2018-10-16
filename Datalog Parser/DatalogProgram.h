@@ -18,35 +18,37 @@ private:
 	Query queryList;
 	set<string> domain;
 public:
-	DatalogProgram() 
-	{
-	}
-	~DatalogProgram() 
-	{
-	}
+	//Default constructor
+	DatalogProgram() {};
+
+	//Destructor
+	~DatalogProgram() {};
+
 	void setScheme(Scheme scheme)
 	{
 		schemeList = scheme;
 	}
+
+	//Setter for factList
 	void setFact(Fact fact)
 	{
 		factList = fact;
 	}
+
+	//Setter for ruleList
 	void setRule(Rule rule)
 	{
 		ruleList = rule;
 	}
+
+	//Setter for queryList
 	void setQuery(Query query)
 	{
 		queryList = query;
 	}
-	string toString()
-	{
-		string output;
-		output += schemeList.toString() + factList.toString() + ruleList.toString() + queryList.toString() + domainToString();
-		return output;
-	}
-	void sortFacts()
+
+	//Copies all ID's and strings within the list of fact predicates into a set which removes duplicates and sorts them and initializes domain to be equal to this set
+	void createDomain()
 	{
 		for (size_t i = 0; i < factList.getPredicates().size(); i++)
 		{
@@ -56,17 +58,27 @@ public:
 			}
 		}
 	}
+
+	//Returns all elements of domain
 	string domainToString()
 	{
 		string output;
 		stringstream ss;
 		ss << domain.size();
-		sortFacts();
+		createDomain();
 		output += "Domain(" + ss.str() + "):\n";
 		for (set<string>::iterator iter = domain.begin(); iter != domain.end(); ++iter)
 		{
 			output += "  " + *iter + "\n";
 		}
+		return output;
+	}
+
+	//Prints out the entire datalog program
+	string toString()
+	{
+		string output;
+		output += schemeList.toString() + factList.toString() + ruleList.toString() + queryList.toString() + domainToString();
 		return output;
 	}
 };

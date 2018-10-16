@@ -1,5 +1,6 @@
 #include "Parser.h"
 
+//Constructor: Takes the list of tokens inside the LexicalAnalyzer object and loads it into a vector data member of the Parser object
 Parser::Parser(list<Token> list)
 {
 	while (!list.empty())
@@ -12,6 +13,7 @@ Parser::Parser(list<Token> list)
 	ss.push(Start);
 }
 
+//Destructor: Deallocates all memory used for parameter pointers by calling a clear function from each member of DatalogProgram
 Parser::~Parser()
 {
 	allSchemes.clear();
@@ -20,6 +22,7 @@ Parser::~Parser()
 	allQueries.clear();
 }
 
+//Matches the current input token with a token that should come next and saves its value to string temp
 void Parser::match(TokenType tt)
 {
 	if (tokenList.at(index).getType() == tt)
@@ -34,6 +37,7 @@ void Parser::match(TokenType tt)
 	}
 }
 
+//Begin the parsing process
 void Parser::parse()
 {
 	ss.pop();
@@ -46,16 +50,21 @@ void Parser::parse()
 	}
 	catch (Token token)
 	{	
-		for (size_t i = 0; i < pred.size(); i++)
+		//Deallocates memory used for the pred pointer
+		/*for (size_t i = 0; i < pred.size(); i++)
 		{
+			pred.at(i)->clearContent();
 			delete pred.at(i);
-		}
+		}*/
+		
 		cout << "Failure!" << endl << "  {" << myList[token.getType()] << "," << token.getValue() << "," << token.getLineNum() << ")" << endl;
 	}
 }
 
+//Begin a recursive process of parsing the datalog program
 void Parser::parseDatalog()
 {
+	//Push production symbols onto the stack and continue further productions until a token is encountered and match it with the tokens from the vector
 	ss.pop();
 	ss.push(queryList);
 	ss.push(query);
@@ -75,23 +84,28 @@ void Parser::parseDatalog()
 	match(COL);
 	parseScheme();
 	parseSchemeList();
+	//Add the instantialized Scheme object to datalog
 	datalog.setScheme(allSchemes);
 	match(FAC);
 	match(COL);
 	parseFactList();
+	//Add the instantialized Fact object to datalog
 	datalog.setFact(allFacts);
 	match(RUL);
 	match(COL);
 	parseRuleList();
+	//Add the instantialized Rule object to datalog
 	datalog.setRule(allRules);
 	match(QUE);
 	match(COL);
 	parseQuery();
 	parseQueryList();
 	match(EF);
+	//Add the instantialized Query object to datalog
 	datalog.setQuery(allQueries);
 }
 
+//Parse the scheme section of the datalog program
 void Parser::parseScheme()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -121,6 +135,7 @@ void Parser::parseScheme()
 	}
 }
 
+//Recursive function to parse a list of scheme predicates
 void Parser::parseSchemeList()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -142,6 +157,7 @@ void Parser::parseSchemeList()
 	}
 }
 
+//Recursive function to parse a list of ID's
 void Parser::parseIdList()
 {
 	if (tokenList.at(index).getType() == COM)
@@ -167,6 +183,7 @@ void Parser::parseIdList()
 	}
 }
 
+//Parse the fact section of the datalog program
 void Parser::parseFact()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -198,6 +215,7 @@ void Parser::parseFact()
 	}
 }
 
+//Recursive function to parse a list of fact predicates
 void Parser::parseFactList()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -219,6 +237,7 @@ void Parser::parseFactList()
 	}
 }
 
+//Parse the rule section of the datalog program
 void Parser::parseRule()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -243,6 +262,7 @@ void Parser::parseRule()
 	}
 }
 
+//Recursive function to parse a list of Rule rules
 void Parser::parseRuleList()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -264,6 +284,7 @@ void Parser::parseRuleList()
 	}
 }
 
+//Parse the head predicate for rules
 void Parser::parseHeadPredicate()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -294,6 +315,7 @@ void Parser::parseHeadPredicate()
 	}
 }
 
+//Parse a predicate for rules and queries
 void Parser::parsePredicate()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -320,6 +342,7 @@ void Parser::parsePredicate()
 	}
 }
 
+//Recursive function to parse a list of predicates for rules and queries
 void Parser::parsePredicateList()
 {
 	if (tokenList.at(index).getType() == COM)
@@ -345,6 +368,7 @@ void Parser::parsePredicateList()
 	}
 }
 
+//Parse a parameter with different methods depending on its derived class type
 void Parser::parseParameter()
 {
 	if (tokenList.at(index).getType() == STR)
@@ -375,6 +399,7 @@ void Parser::parseParameter()
 	}
 }
 
+//Recursive function to parse a list of parameters for a predicate
 void Parser::parseParameterList()
 {
 	if (tokenList.at(index).getType() == COM)
@@ -399,6 +424,7 @@ void Parser::parseParameterList()
 	}
 }
 
+//Parse an expression
 void Parser::parseExpression()
 {
 	if (tokenList.at(index).getType() == LPAR)
@@ -411,12 +437,12 @@ void Parser::parseExpression()
 		ss.push(lpar);
 		match(LPAR);
 		parseParameter();
-		Expression* expTemp = new Expression(param);
+		expTemp.setLParam(param);
 		parseOperator();
-		expTemp->setOperator(temp);
+		expTemp.setOperator(temp);
 		parseParameter();
-		expTemp->setRParam(param);
-		param = expTemp;
+		expTemp.setRParam(param);
+		param = &expTemp;
 		temp = "";
 		match(RPAR);
 	}
@@ -426,6 +452,7 @@ void Parser::parseExpression()
 	}
 }
 
+//Parse an operator
 void Parser::parseOperator()
 {
 	if (tokenList.at(index).getType() == ADD)
@@ -443,10 +470,18 @@ void Parser::parseOperator()
 	}
 	else
 	{
+		for (size_t i = 0; i < pred.size(); i++)
+		{
+			pred.at(i)->clearContent();
+			delete pred.at(i);
+		}
+		expTemp.clearContent();
+		//elete expTemp;
 		throw tokenList.at(index);
 	}
 }
 
+//Parse the query section of the datalog program
 void Parser::parseQuery()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -465,6 +500,7 @@ void Parser::parseQuery()
 	}
 }
 
+//Recursive function to parse a list of query predicates
 void Parser::parseQueryList()
 {
 	if (tokenList.at(index).getType() == ID)
@@ -486,6 +522,7 @@ void Parser::parseQueryList()
 	}
 }
 
+//Recursive function to parse a list of strings
 void Parser::parseStringList()
 {
 	if (tokenList.at(index).getType() == COM)

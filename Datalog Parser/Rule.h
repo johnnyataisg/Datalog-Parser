@@ -10,28 +10,25 @@ class Rule
 private:
 	vector<Rules> ruleList;
 public:
+	//Default constructor
 	Rule() {};
+
+	//Destructor
 	~Rule() {};
+
+	//Push a rule onto this vector
 	void push(Rules rules)
 	{
 		ruleList.push_back(rules);
 	}
+
+	//Push a predicate onto the last Rules member of this vector
 	void pushPred(Predicate pred)
 	{
 		ruleList.back().push(pred);
 	}
-	string toString()
-	{
-		string output;
-		stringstream ss;
-		ss << ruleList.size();
-		output += "Rules(" + ss.str() + "):\n";
-		for (size_t i = 0; i < ruleList.size(); i++)
-		{
-			output += "  " + ruleList.at(i).toString() + ".\n";
-		}
-		return output;
-	}
+
+	//Deallocate all memory of parameter pointers within all predicates inside Rules contained by this vector
 	void clear()
 	{
 		for (size_t i = 0; i < ruleList.size(); i++)
@@ -49,6 +46,20 @@ public:
 				}
 			}
 		}
+	}
+
+	//Print out all rule predicates
+	string toString()
+	{
+		string output;
+		stringstream ss;
+		ss << ruleList.size();
+		output += "Rules(" + ss.str() + "):\n";
+		for (size_t i = 0; i < ruleList.size(); i++)
+		{
+			output += "  " + ruleList.at(i).toString() + ".\n";
+		}
+		return output;
 	}
 };
 

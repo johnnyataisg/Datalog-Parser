@@ -19,13 +19,16 @@ int main(int argc, char* argv[])
 		ifstream inputFile(argv[1]);
 		string line;
 		string con;
+		//Read all lines from the input file
 		while (getline(inputFile, line))
 		{
 			con = con + line + "\n";
 		}
 
 		LexicalAnalyzer lex(con);
+		//Generate the list of tokens from the input file
 		lex.generateList();
+		//Copy the list of tokens into a vector of the parser object
 		Parser parser(lex.getList());
 		parser.parse();
 

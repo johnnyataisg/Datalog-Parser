@@ -10,28 +10,43 @@ private:
 	Predicate headPred;
 	vector<Predicate> predicates;
 public:
+	//Default constructor
 	Rules() {};
+
+	//Constructor that sets a head predicate
 	Rules(Predicate head)
 	{
 		headPred = head;
 	}
+
+	//Destructor
 	~Rules() {};
+
+	//Getter for headPred
 	Predicate getHead()
 	{
 		return this->headPred;
 	}
+
+	//Getter for predicates
 	vector<Predicate> getPredicates()
 	{
 		return this->predicates;
 	}
+
+	//Setter for headPred
 	void setHead(Predicate pred)
 	{
 		headPred = pred;
 	}
+
+	//Pushes a predicate onto the vector
 	void push(Predicate pred)
 	{
 		predicates.push_back(pred);
 	}
+
+	//Prints out each head predicate along with its associated tail predicates
 	string toString()
 	{
 		string output;

@@ -4,6 +4,7 @@
 
 using namespace std;
 
+//Abstract class used by string id and expression
 class Parameter
 {
 private:

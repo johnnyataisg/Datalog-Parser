@@ -10,6 +10,7 @@
 
 using namespace std;
 
+//Define a set of symbols used to annotate the grammar productions
 enum Symbols { datalogProgram, scheme, schemeList, idList, fact, factList, rule, ruleList, headPredicate, predicate, predicateList, 
 			   parameter, parameterList, expression, Operator, query, queryList, stringList, comma, period, qmark, lpar, rpar,
 			   colon, cdash, multiply, add, schemes, facts, rules, queries, id, str, ef, Start, End };
@@ -20,20 +21,22 @@ private:
 	vector<Token> tokenList;
 	int index;
 	stack<Symbols> ss;
+	//Array of token types to be referenced by TokenType values
 	string myList[18] = { "COMMA", "PERIOD", "Q_MARK", "LEFT_PAREN", "RIGHT_PAREN", "COLON", "COLON_DASH"
 						, "MULTIPLY", "ADD", "SCHEMES", "FACTS", "RULES", "QUERIES", "ID", "STRING", "COMMENT", "UNDEFINED", "EOF" };
-	string temp;
 	DatalogProgram datalog;
 	Scheme allSchemes;
 	Fact allFacts;
 	Rule allRules;
 	Query allQueries;
+	//Temporary data members to help instantialize datalog
+	string temp;
 	Predicate pred;
 	Parameter* param;
+	Expression expTemp;
 public:
 	Parser(list<Token> list);
 	~Parser();
-	string print();
 	void match(TokenType tt);
 	void parse();
 	void parseDatalog();
