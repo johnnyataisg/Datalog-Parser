@@ -20,6 +20,7 @@ public:
 	{
 		return value;
 	}
+	void clearContent() {};
 };
 
 #endif

@@ -20,19 +20,6 @@ Parser::~Parser()
 	allQueries.clear();
 }
 
-string Parser::print()
-{
-	string output;
-	for (size_t i = 0; i < tokenList.size(); i++)
-	{
-		stringstream iss;
-		iss << tokenList.at(i).getLineNum();
-		string num = iss.str();
-		output += "(" + myList[tokenList.at(i).getType()] + "," + "\"" + tokenList.at(i).getValue() + "\"," + num + ")" + "\n";
-	}
-	return output;
-}
-
 void Parser::match(TokenType tt)
 {
 	if (tokenList.at(index).getType() == tt)
@@ -58,7 +45,7 @@ void Parser::parse()
 		cout << datalog.toString();
 	}
 	catch (Token token)
-	{
+	{	
 		for (size_t i = 0; i < pred.size(); i++)
 		{
 			delete pred.at(i);
@@ -103,7 +90,6 @@ void Parser::parseDatalog()
 	parseQueryList();
 	match(EF);
 	datalog.setQuery(allQueries);
-	datalog.sortFacts();
 }
 
 void Parser::parseScheme()
@@ -324,6 +310,7 @@ void Parser::parsePredicate()
 		temp = "";
 		match(LPAR);
 		parseParameter();
+		pred.push(param);
 		parseParameterList();
 		match(RPAR);
 	}
@@ -365,7 +352,7 @@ void Parser::parseParameter()
 		ss.pop();
 		ss.push(str);
 		match(STR);
-		pred.push(new String(temp));
+		param = new String(temp);
 		temp = "";
 	}
 	else if (tokenList.at(index).getType() == ID)
@@ -373,7 +360,7 @@ void Parser::parseParameter()
 		ss.pop();
 		ss.push(id);
 		match(ID);
-		pred.push(new Id(temp));
+		param = new Id(temp);
 		temp = "";
 	}
 	else if (tokenList.at(index).getType() == LPAR)
@@ -398,6 +385,7 @@ void Parser::parseParameterList()
 		ss.push(comma);
 		match(COM);
 		parseParameter();
+		pred.push(param);
 		parseParameterList();
 	}
 	else if (tokenList.at(index).getType() == RPAR)
@@ -423,8 +411,13 @@ void Parser::parseExpression()
 		ss.push(lpar);
 		match(LPAR);
 		parseParameter();
+		Expression* expTemp = new Expression(param);
 		parseOperator();
+		expTemp->setOperator(temp);
 		parseParameter();
+		expTemp->setRParam(param);
+		param = expTemp;
+		temp = "";
 		match(RPAR);
 	}
 	else
@@ -440,6 +433,7 @@ void Parser::parseOperator()
 		ss.pop();
 		ss.push(add);
 		match(ADD);
+
 	}
 	else if (tokenList.at(index).getType() == MUL)
 	{

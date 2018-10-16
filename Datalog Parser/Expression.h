@@ -7,9 +7,37 @@ using namespace std;
 class Expression : public Parameter
 {
 private:
-
+	Parameter* leftParam;
+	string sign;
+	Parameter* rightParam;
 public:
-	
+	Expression() {};
+	Expression(Parameter* param1)
+	{
+		leftParam = param1;
+	}
+	virtual ~Expression() {};
+	void setOperator(string oper)
+	{
+		sign = oper;
+	}
+	void setRParam(Parameter* param2)
+	{
+		rightParam = param2;
+	}
+	string toString()
+	{
+		string output;
+		output += "(" + leftParam->toString() + sign + rightParam->toString() + ")";
+		return output;
+	}
+	void clearContent()
+	{
+		this->leftParam->clearContent();
+		this->rightParam->clearContent();
+		delete this->leftParam;
+		delete this->rightParam;
+	}
 };
 
 #endif

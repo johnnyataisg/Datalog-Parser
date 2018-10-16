@@ -11,6 +11,7 @@ public:
 	Parameter() {};
 	virtual ~Parameter() {};
 	virtual string toString() = 0;
+	virtual void clearContent() = 0;
 };
 
 #endif

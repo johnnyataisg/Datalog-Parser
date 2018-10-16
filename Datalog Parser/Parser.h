@@ -29,6 +29,7 @@ private:
 	Rule allRules;
 	Query allQueries;
 	Predicate pred;
+	Parameter* param;
 public:
 	Parser(list<Token> list);
 	~Parser();
@@ -53,10 +54,6 @@ public:
 	void parseQuery();
 	void parseQueryList();
 	void parseStringList();
-	DatalogProgram getProgram()
-	{
-		return datalog;
-	}
 };
 
 #endif

@@ -1,7 +1,7 @@
 #pragma once
 #ifndef DATALOG_PROGRAM_H_
 #define DATALOG_PROGRAM_H_
-#include <algorithm>
+#include <set>
 #include "Scheme.h"
 #include "Fact.h"
 #include "Rule.h"
@@ -16,7 +16,7 @@ private:
 	Fact factList;
 	Rule ruleList;
 	Query queryList;
-	vector<string> domain;
+	set<string> domain;
 public:
 	DatalogProgram() 
 	{
@@ -52,21 +52,20 @@ public:
 		{
 			for (size_t t = 0; t < factList.getPredicates().at(i).size(); t++)
 			{
-				domain.push_back(factList.getPredicates().at(i).at(t)->toString());
+				domain.insert(factList.getPredicates().at(i).at(t)->toString());
 			}
 		}
-		sort(domain.begin(), domain.end());
-		domain.erase(unique(domain.begin(), domain.end()), domain.end());
 	}
 	string domainToString()
 	{
 		string output;
 		stringstream ss;
 		ss << domain.size();
+		sortFacts();
 		output += "Domain(" + ss.str() + "):\n";
-		for (size_t i = 0; i < domain.size(); i++)
+		for (set<string>::iterator iter = domain.begin(); iter != domain.end(); ++iter)
 		{
-			output += "  " + domain.at(i) + "\n";
+			output += "  " + *iter + "\n";
 		}
 		return output;
 	}

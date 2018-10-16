@@ -23,6 +23,7 @@ public:
 	{
 		value = "";
 	}
+	void clearContent() {};
 };
 
 #endif

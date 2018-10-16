@@ -44,6 +44,7 @@ public:
 			{
 				for (size_t p = 0; p < ruleList.at(i).getPredicates().at(x).size(); p++)
 				{
+					ruleList.at(i).getPredicates().at(x).at(p)->clearContent();
 					delete ruleList.at(i).getPredicates().at(x).at(p);
 				}
 			}
