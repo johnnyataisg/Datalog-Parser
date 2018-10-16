@@ -2,17 +2,15 @@
 #ifndef PREDICATE_H_
 #define PREDICATE_H_
 #include <vector>
-#include "String.h"
-#include "Id.h"
-#include "Expression.h"
+#include "Parameter.h"
 
 using namespace std;
 
 class Predicate
 {
 private:
-	Id id;
-	vector<Parameter*> parameterList;
+	string id;
+	vector<Parameter> parameterList;
 public:
 	//Default constructor
 	Predicate() {};
@@ -20,8 +18,13 @@ public:
 	//Destructor
 	~Predicate() {};
 
+	Predicate(string id1)
+	{
+		id = id1;
+	}
+
 	//Push a parameter pointer onto this vector
-	void push(Parameter* param)
+	void push(Parameter param)
 	{
 		parameterList.push_back(param);
 	}
@@ -30,7 +33,12 @@ public:
 	void clear()
 	{
 		parameterList.clear();
-		id.clear();
+		id = "";
+	}
+
+	vector<Parameter> getParamList()
+	{
+		return this->parameterList;
 	}
 
 	//Returns the size of the vector
@@ -40,13 +48,13 @@ public:
 	}
 
 	//Returns the parameter pointer at a given index of the vector
-	Parameter*& at(size_t index)
+	Parameter& at(size_t index)
 	{
 		return this->parameterList.at(index);
 	}
 
 	//Setter for the ID
-	void setID(Id ID)
+	void setID(string ID)
 	{
 		id = ID;
 	}
@@ -55,10 +63,10 @@ public:
 	string toString()
 	{
 		string output;
-		output += id.toString() +'(';
+		output += id +'(';
 		for (size_t i = 0; i < parameterList.size(); i++)
 		{
-			output += parameterList.at(i)->toString();
+			output += parameterList.at(i).toString();
 			if (i < parameterList.size() - 1)
 			{
 				output += ',';

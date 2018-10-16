@@ -32,6 +32,5 @@ int main(int argc, char* argv[])
 		Parser parser(lex.getList());
 		parser.parse();
 
-		system("pause");
 		return 0;
 }

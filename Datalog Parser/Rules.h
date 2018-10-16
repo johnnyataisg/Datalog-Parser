@@ -22,6 +22,11 @@ public:
 	//Destructor
 	~Rules() {};
 
+	void setHeadID(string id1)
+	{
+		headPred.setID(id1);
+	}
+
 	//Getter for headPred
 	Predicate getHead()
 	{
@@ -44,6 +49,16 @@ public:
 	void push(Predicate pred)
 	{
 		predicates.push_back(pred);
+	}
+
+	void addParameter(Parameter param)
+	{
+		predicates.back().push(param);
+	}
+
+	void addHeadParameter(Parameter param)
+	{
+		headPred.push(param);
 	}
 
 	//Prints out each head predicate along with its associated tail predicates

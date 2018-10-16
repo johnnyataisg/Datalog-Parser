@@ -15,9 +15,13 @@ enum Symbols { datalogProgram, scheme, schemeList, idList, fact, factList, rule,
 			   parameter, parameterList, expression, Operator, query, queryList, stringList, comma, period, qmark, lpar, rpar,
 			   colon, cdash, multiply, add, schemes, facts, rules, queries, id, str, ef, Start, End };
 
+enum parseState {PS, PR, PQ, STRPARAM, IDPARAM, EXPPARAM};
+
 class Parser
 {
 private:
+	parseState state;
+	parseState substate;
 	vector<Token> tokenList;
 	int index;
 	stack<Symbols> ss;
@@ -25,15 +29,11 @@ private:
 	string myList[18] = { "COMMA", "PERIOD", "Q_MARK", "LEFT_PAREN", "RIGHT_PAREN", "COLON", "COLON_DASH"
 						, "MULTIPLY", "ADD", "SCHEMES", "FACTS", "RULES", "QUERIES", "ID", "STRING", "COMMENT", "UNDEFINED", "EOF" };
 	DatalogProgram datalog;
-	Scheme allSchemes;
-	Fact allFacts;
-	Rule allRules;
-	Query allQueries;
 	//Temporary data members to help instantialize datalog
 	string temp;
+	Parameter param;
 	Predicate pred;
-	Parameter* param;
-	Expression expTemp;
+	string temp2;
 public:
 	Parser(list<Token> list);
 	~Parser();

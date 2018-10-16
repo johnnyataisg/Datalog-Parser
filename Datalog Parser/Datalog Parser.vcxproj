@@ -121,19 +121,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatalogProgram.h" />
-    <ClInclude Include="Expression.h" />
-    <ClInclude Include="Fact.h" />
-    <ClInclude Include="Id.h" />
     <ClInclude Include="InputStream.h" />
     <ClInclude Include="LexicalAnalyzer.h" />
     <ClInclude Include="Parameter.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Predicate.h" />
-    <ClInclude Include="Query.h" />
-    <ClInclude Include="Rule.h" />
     <ClInclude Include="Rules.h" />
-    <ClInclude Include="Scheme.h" />
-    <ClInclude Include="String.h" />
     <ClInclude Include="Token.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

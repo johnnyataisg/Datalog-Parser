@@ -16,10 +16,6 @@ Parser::Parser(list<Token> list)
 //Destructor: Deallocates all memory used for parameter pointers by calling a clear function from each member of DatalogProgram
 Parser::~Parser()
 {
-	allSchemes.clear();
-	allFacts.clear();
-	allRules.clear();
-	allQueries.clear();
 }
 
 //Matches the current input token with a token that should come next and saves its value to string temp
@@ -50,13 +46,6 @@ void Parser::parse()
 	}
 	catch (Token token)
 	{	
-		//Deallocates memory used for the pred pointer
-		/*for (size_t i = 0; i < pred.size(); i++)
-		{
-			pred.at(i)->clearContent();
-			delete pred.at(i);
-		}*/
-		
 		cout << "Failure!" << endl << "  {" << myList[token.getType()] << "," << token.getValue() << "," << token.getLineNum() << ")" << endl;
 	}
 }
@@ -84,25 +73,17 @@ void Parser::parseDatalog()
 	match(COL);
 	parseScheme();
 	parseSchemeList();
-	//Add the instantialized Scheme object to datalog
-	datalog.setScheme(allSchemes);
 	match(FAC);
 	match(COL);
 	parseFactList();
-	//Add the instantialized Fact object to datalog
-	datalog.setFact(allFacts);
 	match(RUL);
 	match(COL);
 	parseRuleList();
-	//Add the instantialized Rule object to datalog
-	datalog.setRule(allRules);
 	match(QUE);
 	match(COL);
 	parseQuery();
 	parseQueryList();
 	match(EF);
-	//Add the instantialized Query object to datalog
-	datalog.setQuery(allQueries);
 }
 
 //Parse the scheme section of the datalog program
@@ -110,6 +91,7 @@ void Parser::parseScheme()
 {
 	if (tokenList.at(index).getType() == ID)
 	{
+		state = PS;
 		ss.pop();
 		ss.push(rpar);
 		ss.push(idList);
@@ -117,16 +99,13 @@ void Parser::parseScheme()
 		ss.push(lpar);
 		ss.push(id);
 		match(ID);
-		Id idTemp(temp);
-		pred.setID(idTemp);
+		datalog.pushSchemeList(Predicate((temp)));
 		temp = "";
 		match(LPAR);
 		match(ID);
-		pred.push(new Id(temp));
+		datalog.addSchemeParam(Parameter(temp, "ID"));
 		temp = "";
 		parseIdList();
-		allSchemes.push(pred);
-		pred.clear();
 		match(RPAR);
 	}
 	else
@@ -168,7 +147,14 @@ void Parser::parseIdList()
 		ss.push(comma);
 		match(COM);
 		match(ID);
-		pred.push(new Id(temp));
+		if (state == PS)
+		{
+			datalog.addSchemeParam(Parameter(temp, "ID"));
+		}
+		else
+		{
+			datalog.addParamToHead(Parameter(temp, "ID"));
+		}
 		temp = "";
 		parseIdList();
 	}
@@ -196,16 +182,13 @@ void Parser::parseFact()
 		ss.push(lpar);
 		ss.push(id);
 		match(ID);
-		Id idTemp(temp);
-		pred.setID(idTemp);
+		datalog.pushFactList(Predicate(temp));
 		temp = "";
 		match(LPAR);
 		match(STR);
-		pred.push(new String(temp));
+		datalog.addFactParam(Parameter(temp, "String"));
 		temp = "";
 		parseStringList();
-		allFacts.push(pred);
-		pred.clear();
 		match(RPAR);
 		match(PER);
 	}
@@ -242,6 +225,7 @@ void Parser::parseRule()
 {
 	if (tokenList.at(index).getType() == ID)
 	{
+		state = PR;
 		ss.pop();
 		ss.push(period);
 		ss.push(predicateList);
@@ -251,7 +235,7 @@ void Parser::parseRule()
 		parseHeadPredicate();
 		match(COLD);
 		parsePredicate();
-		allRules.pushPred(pred);
+		datalog.addPredToRules(pred);
 		pred.clear();
 		parsePredicateList();
 		match(PER);
@@ -296,17 +280,13 @@ void Parser::parseHeadPredicate()
 		ss.push(lpar);
 		ss.push(id);
 		match(ID);
-		Id idTemp(temp);
-		pred.setID(idTemp);
+		datalog.pushRuleList(Rules(Predicate(temp)));
 		temp = "";
 		match(LPAR);
 		match(ID);
-		pred.push(new Id(temp));
+		datalog.addParamToHead(Parameter(temp, "ID"));
 		temp = "";
 		parseIdList();
-		Rules ruleTemp(pred);
-		allRules.push(ruleTemp);
-		pred.clear();
 		match(RPAR);
 	}
 	else
@@ -327,12 +307,30 @@ void Parser::parsePredicate()
 		ss.push(lpar);
 		ss.push(id);
 		match(ID);
-		Id idTemp(temp);
-		pred.setID(idTemp);
+		pred = Predicate(temp);
+		/*if (state == PQ)
+		{
+			datalog.pushQueryList(Predicate(temp));
+			
+		}
+		else
+		{
+			datalog.addPredToRules(Predicate(temp));
+		}*/
 		temp = "";
 		match(LPAR);
 		parseParameter();
 		pred.push(param);
+		/*if (state = PR)
+		{
+			datalog.addParamToPredList(param);
+		}
+		else
+		{
+			datalog.addQueryParam(param);
+		}*/
+		temp = "";
+		temp2 = "";
 		parseParameterList();
 		match(RPAR);
 	}
@@ -353,7 +351,7 @@ void Parser::parsePredicateList()
 		ss.push(comma);
 		match(COM);
 		parsePredicate();
-		allRules.pushPred(pred);
+		datalog.addPredToRules(pred);
 		pred.clear();
 		parsePredicateList();
 	}
@@ -376,22 +374,21 @@ void Parser::parseParameter()
 		ss.pop();
 		ss.push(str);
 		match(STR);
-		param = new String(temp);
-		temp = "";
+		param = Parameter(temp, "String");
 	}
 	else if (tokenList.at(index).getType() == ID)
 	{
 		ss.pop();
 		ss.push(id);
 		match(ID);
-		param = new Id(temp);
-		temp = "";
+		param = Parameter(temp, "ID");
 	}
 	else if (tokenList.at(index).getType() == LPAR)
 	{
 		ss.pop();
 		ss.push(expression);
 		parseExpression();
+		param = Parameter(temp2, "Expression");
 	}
 	else
 	{
@@ -410,7 +407,17 @@ void Parser::parseParameterList()
 		ss.push(comma);
 		match(COM);
 		parseParameter();
+		/*if (state == PR)
+		{
+			datalog.addParamToPredList(param);
+		}
+		else
+		{
+			datalog.addQueryParam(param);
+		}*/
 		pred.push(param);
+		temp = "";
+		temp2 = "";
 		parseParameterList();
 	}
 	else if (tokenList.at(index).getType() == RPAR)
@@ -436,15 +443,16 @@ void Parser::parseExpression()
 		ss.push(parameter);
 		ss.push(lpar);
 		match(LPAR);
+		temp2 += temp;
 		parseParameter();
-		expTemp.setLParam(param);
+		temp2 += temp;
 		parseOperator();
-		expTemp.setOperator(temp);
+		temp2 += temp;
 		parseParameter();
-		expTemp.setRParam(param);
-		param = &expTemp;
-		temp = "";
+		temp2 += temp;
 		match(RPAR);
+		temp2 += temp;
+		temp = "";
 	}
 	else
 	{
@@ -470,13 +478,6 @@ void Parser::parseOperator()
 	}
 	else
 	{
-		for (size_t i = 0; i < pred.size(); i++)
-		{
-			pred.at(i)->clearContent();
-			delete pred.at(i);
-		}
-		expTemp.clearContent();
-		//elete expTemp;
 		throw tokenList.at(index);
 	}
 }
@@ -484,14 +485,14 @@ void Parser::parseOperator()
 //Parse the query section of the datalog program
 void Parser::parseQuery()
 {
+	state = PQ;
 	if (tokenList.at(index).getType() == ID)
 	{
 		ss.pop();
 		ss.push(qmark);
 		ss.push(predicate);
 		parsePredicate();
-		allQueries.push(pred);
-		pred.clear();
+		datalog.pushQueryList(pred);
 		match(QM);
 	}
 	else
@@ -533,7 +534,7 @@ void Parser::parseStringList()
 		ss.push(comma);
 		match(COM);
 		match(STR);
-		pred.push(new String(temp));
+		datalog.addFactParam(Parameter(temp, "String"));
 		temp = "";
 		parseStringList();
 	}

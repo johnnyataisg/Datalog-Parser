@@ -4,15 +4,48 @@
 
 using namespace std;
 
-//Abstract class used by string id and expression
 class Parameter
 {
 private:
+	string value;
+	string type;
 public:
 	Parameter() {};
-	virtual ~Parameter() {};
-	virtual string toString() = 0;
-	virtual void clearContent() = 0;
+	Parameter(string value, string type)
+	{
+		this->value = value;
+		this->type = type;
+	}
+
+	string getValue()
+	{
+		return this->value;
+	}
+
+	string getType()
+	{
+		return this->type;
+	}
+
+	string toString()
+	{
+		return this->value;
+	}
+
+	class Expression
+	{
+	public:
+		Expression(Parameter* param, string * oper, Parameter * param2)
+		{
+			this->param = param;
+			this->oper = oper;
+			this->param2 = param2;
+		}
+		Parameter * param;
+		string * oper;
+		Parameter * param2;
+	private:
+	};
 };
 
 #endif
