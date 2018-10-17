@@ -123,7 +123,7 @@ public:
 		output += "Facts(" + ss.str() + "):\n";
 		for (size_t i = 0; i < factList.size(); i++)
 		{
-			output += "  " + factList.at(i).toString() + "\n";
+			output += "  " + factList.at(i).toString() + ".\n";
 		}
 		return output;
 	}
@@ -149,7 +149,7 @@ public:
 		output += "Queries(" + ss.str() + "):\n";
 		for (size_t i = 0; i < queryList.size(); i++)
 		{
-			output += "  " + queryList.at(i).toString() + ".\n";
+			output += "  " + queryList.at(i).toString() + "?\n";
 		}
 		return output;
 	}

@@ -46,7 +46,7 @@ void Parser::parse()
 	}
 	catch (Token token)
 	{	
-		cout << "Failure!" << endl << "  {" << myList[token.getType()] << "," << token.getValue() << "," << token.getLineNum() << ")" << endl;
+		cout << "Failure!" << endl << "  (" << myList[token.getType()] << ",\"" << token.getValue() << "\"," << token.getLineNum() << ")" << endl;
 	}
 }
 
@@ -308,27 +308,10 @@ void Parser::parsePredicate()
 		ss.push(id);
 		match(ID);
 		pred = Predicate(temp);
-		/*if (state == PQ)
-		{
-			datalog.pushQueryList(Predicate(temp));
-			
-		}
-		else
-		{
-			datalog.addPredToRules(Predicate(temp));
-		}*/
 		temp = "";
 		match(LPAR);
 		parseParameter();
 		pred.push(param);
-		/*if (state = PR)
-		{
-			datalog.addParamToPredList(param);
-		}
-		else
-		{
-			datalog.addQueryParam(param);
-		}*/
 		temp = "";
 		temp2 = "";
 		parseParameterList();
@@ -407,14 +390,6 @@ void Parser::parseParameterList()
 		ss.push(comma);
 		match(COM);
 		parseParameter();
-		/*if (state == PR)
-		{
-			datalog.addParamToPredList(param);
-		}
-		else
-		{
-			datalog.addQueryParam(param);
-		}*/
 		pred.push(param);
 		temp = "";
 		temp2 = "";
